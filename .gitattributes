@@ -1,0 +1,3 @@
+*.json -text
+*.sig -text
+*.js -text

@@ -1,0 +1,7 @@
+{
+  "id": "live-share",
+  "version": "1.0.1",
+  "name": "即時分享",
+  "description": "以分享碼讓其他 IRMS App 即時同步觀看這台裝置;主機可逐一允許觀看者變更設定。需開啟即時遙測上傳。",
+  "minAppVersion": "1.2.0-beta.16"
+}
