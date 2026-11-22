@@ -44,7 +44,9 @@ const NATIVE_ID = /^[a-z][a-z0-9-]{1,40}$/
 const NATIVE_VERSION = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/
 const RESERVED = /^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/
 const INSTALLER_FILES = ['index.json', 'index.json.sig', 'meta.json', 'active.json']
-const tag = process.env.GITHUB_REF_NAME || 'v0.0.0-check'
+// Only a tag push names the real release; branch and pull-request runs (GITHUB_REF_NAME such as
+// 1/merge) validate against a placeholder tag.
+const tag = process.env.GITHUB_REF_TYPE === 'tag' && process.env.GITHUB_REF_NAME ? process.env.GITHUB_REF_NAME : 'v0.0.0-check'
 if (!/^[A-Za-z0-9._-]{1,40}$/.test(tag) || tag.includes('..')) throw new Error(`release tag ${tag} is not accepted by the app`)
 
 function checkFileName(owner, n) {

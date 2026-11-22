@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 
 test('native packs are built into dist with a consumer-valid index entry', () => {
-  execFileSync('node', ['scripts/build-index.mjs', '--no-sign'], { env: { ...process.env, GITHUB_REF_NAME: 'v2026.11.22' } })
+  execFileSync('node', ['scripts/build-index.mjs', '--no-sign'], { env: { ...process.env, GITHUB_REF_NAME: 'v2026.11.22', GITHUB_REF_TYPE: 'tag' } })
   const index = JSON.parse(readFileSync('dist/index.json', 'utf8'))
   assert.ok(Array.isArray(index.native) && index.native.length >= 1)
   for (const e of index.native) {
