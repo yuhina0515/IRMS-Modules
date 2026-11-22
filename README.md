@@ -42,6 +42,26 @@ Public key (raw, base64): `rmTFnYTSMzLCrqDW0Hv3e6gKKXFODYhxd1zkvmWceG0=` — emb
 
 `node scripts/build-index.mjs --no-sign` validates ids, versions and the no-import rule.
 
+
+## Native content packs (native IRMS app 1.3.0-beta.14+)
+
+The native app reads the same signed `index.json` and the same release. Besides `modules`, the
+index carries a top-level `native` array (the Tauri app ignores it; the signature covers the whole file).
+
+- Source: `native/<id>/pack.json` (id = folder name, version, name, description, `kind: "content"`,
+  `schemaVersion`, `minApp`, `files` list) plus the content files. Today: `native/session-tips/`
+  with `tips.json` (`{ "schema_version": 1, "tips": [...] }`, 1-20 tips, each at most 300 characters).
+- Build: `scripts/build-index.mjs` copies each file to `dist/<id>-<version>-<path>` (flat release
+  asset name), hashes it, computes the package digest (SHA-256 over the files in listed order) and
+  writes the entry. `url` is `https://github.com/yuhina0515/IRMS-Modules/releases/download/<tag>/`
+  with `<tag>` taken from `GITHUB_REF_NAME` (`v0.0.0-check` locally). The script applies the same
+  id, semver, file-name, 256 KiB file, 8 file and 128 KiB index limits as `IRMS_Core/src/modules.rs`.
+- Publish: the release workflow uploads everything in `dist/`, so native files, JS modules,
+  `index.json` and `index.json.sig` all land in one release. The app reads `releases/latest/download/`,
+  so every tag must carry the complete index. Change a pack by editing its files and bumping
+  `version` in `pack.json` (the app refuses downgrades).
+- Check: `node scripts/build-index.mjs --no-sign` and `tests/native-packs.test.mjs`.
+
 ## Panels and live share (App 1.2.0-beta.16+)
 
 Additive to API v2 (`ctx.apiVersion` stays `2`; check for the fields instead):
